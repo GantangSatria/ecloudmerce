@@ -94,10 +94,46 @@ export async function PUT(req: Request, context: { params: PromiseLike<{ id: any
   }
 }
 
-export async function DELETE(_: Request, { params }: any) {
+export async function DELETE(req: Request, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
+  const productId = Number(id);
+
+  if (isNaN(productId)) {
+    return NextResponse.json({ error: "invalid id" }, { status: 400 });
+  }
+
+  // 1. Ambil produk
+  const product = await prisma.product.findUnique({
+    where: { id: productId }
+  });
+
+  if (!product) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  // 2. Hapus file di S3 jika ada
+  if (product.imageUrl) {
+    const key = product.imageUrl.split("/").pop();
+
+    try {
+      await s3.send(
+        new DeleteObjectCommand({
+          Bucket: process.env.AWS_S3_BUCKET!,
+          Key: key!,
+        })
+      );
+      console.log("DELETE S3 SUCCESS:", key);
+    } catch (err) {
+      console.error("DELETE S3 ERROR:", err);
+      // tidak return error, tetap lanjut hapus database
+    }
+  }
+
+  // 3. Hapus database
   await prisma.product.delete({
-    where: { id: Number(params.id) }
+    where: { id: productId }
   });
 
   return NextResponse.json({ message: "Deleted" });
 }
+
