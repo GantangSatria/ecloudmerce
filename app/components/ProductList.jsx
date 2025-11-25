@@ -15,8 +15,8 @@ export default function ProductList({ products, onEdit, onDelete, onAddToCart })
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-4">
               <div className="h-24 w-24 overflow-hidden rounded-lg border bg-zinc-100">
-                {p.image ? (
-                  <img src={p.image} alt={p.name} className="h-full w-full object-cover" />
+                {p.imageUrl ? (
+                  <img src={p.imageUrl} alt={p.name} className="h-full w-full object-cover" />
                 ) : null}
               </div>
               <div>

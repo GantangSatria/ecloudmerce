@@ -6,22 +6,34 @@ export default function ProductForm({ onSubmit, initial }) {
   const [price, setPrice] = useState(initial?.price || "");
   const [desc, setDesc] = useState(initial?.desc || "");
   const [image, setImage] = useState(initial?.image || "");
+  const [file, setFile] = useState(null);   
 
   const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const f = e.target.files?.[0];
+    if (!f) return;
+
+    setFile(f);
+
     const reader = new FileReader();
     reader.onload = () => setImage(String(reader.result));
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(f);
   };
 
   const handleSubmit = () => {
     if (!name || !price) return;
-    onSubmit({ name, price: Number(price), desc, image });
+
+    onSubmit({
+      name,
+      price: Number(price),
+      desc,
+      file,      
+    });
+
     setName("");
     setPrice("");
     setDesc("");
     setImage("");
+    setFile(null);
   };
 
   return (
@@ -42,6 +54,7 @@ export default function ProductForm({ onSubmit, initial }) {
           />
         </div>
       </div>
+
       <div>
         <label className="block text-sm font-medium mb-1">Nama Produk</label>
         <input
@@ -51,6 +64,7 @@ export default function ProductForm({ onSubmit, initial }) {
           className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/50"
         />
       </div>
+
       <div>
         <label className="block text-sm font-medium mb-1">Harga</label>
         <input
@@ -60,6 +74,7 @@ export default function ProductForm({ onSubmit, initial }) {
           className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/50"
         />
       </div>
+
       <div>
         <label className="block text-sm font-medium mb-1">Deskripsi</label>
         <textarea
@@ -69,6 +84,7 @@ export default function ProductForm({ onSubmit, initial }) {
           rows="3"
         />
       </div>
+
       <button
         onClick={handleSubmit}
         className="w-full rounded-lg bg-black text-white px-4 py-2 hover:bg-zinc-800 transition"

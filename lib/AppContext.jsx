@@ -1,8 +1,7 @@
 "use client";
-import { createContext, useContext, useState, useMemo, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const AppContext = createContext();
-const PRODUCTS_KEY = "ecloudmerce_products";
 const CART_KEY = "ecloudmerce_cart";
 
 export function AppProvider({ children }) {
@@ -10,61 +9,77 @@ export function AppProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Load data from localStorage on mount
+  // Load cart & fetch products
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedProducts = localStorage.getItem(PRODUCTS_KEY);
       const storedCart = localStorage.getItem(CART_KEY);
-      
-      if (storedProducts) {
-        setProducts(JSON.parse(storedProducts));
-      }
-      if (storedCart) {
-        setCartItems(JSON.parse(storedCart));
-      }
+      if (storedCart) setCartItems(JSON.parse(storedCart));
       setIsHydrated(true);
     }
+
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data));
   }, []);
 
-  // Save products to localStorage whenever they change
+  // Save cart whenever it changes
   useEffect(() => {
-    if (isHydrated && typeof window !== "undefined") {
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
-    }
-  }, [products, isHydrated]);
-
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    if (isHydrated && typeof window !== "undefined") {
+    if (isHydrated) {
       localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
     }
   }, [cartItems, isHydrated]);
 
-  const nextProductId = useMemo(
-    () => products.reduce((m, p) => Math.max(m, p.id), 0) + 1,
-    [products]
-  );
+  // CRUD Product (API)
+  const addProduct = async (data) => {
+    let imageUrl = null;
 
-  // Product functions
-  const addProduct = (data) => {
-    setProducts((prev) => [...prev, { id: nextProductId, ...data }]);
+    if (data.file) {
+      const form = new FormData();
+      form.append("file", data.file);
+
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: form,
+      });
+
+      const uploadJson = await uploadRes.json();
+      imageUrl = uploadJson.url;
+    }
+
+    const res = await fetch("/api/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: data.name,
+        price: data.price,
+        imageUrl: imageUrl,
+      }),
+    });
+
+    const newProduct = await res.json();
+    setProducts((prev) => [newProduct, ...prev]);
   };
 
-  const updateProduct = (id, data) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, ...data } : p))
-    );
+  const updateProduct = async (id, data) => {
+    const res = await fetch(`/api/products/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const updated = await res.json();
+    setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)));
   };
 
-  const deleteProduct = (id) => {
+  const deleteProduct = async (id) => {
+    await fetch(`/api/products/${id}`, { method: "DELETE" });
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };
 
   // Cart functions
   const addToCart = (product, qty = 1) => {
     setCartItems((prev) => {
-      const existing = prev.find((i) => i.id === product.id);
-      if (existing) {
+      const exists = prev.find((i) => i.id === product.id);
+      if (exists) {
         return prev.map((i) =>
           i.id === product.id ? { ...i, qty: i.qty + qty } : i
         );
@@ -81,9 +96,7 @@ export function AppProvider({ children }) {
     setCartItems((prev) => prev.map((i) => (i.id === id ? { ...i, qty } : i)));
   };
 
-  const clearCart = () => {
-    setCartItems([]);
-  };
+  const clearCart = () => setCartItems([]);
 
   return (
     <AppContext.Provider
