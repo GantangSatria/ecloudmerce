@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.939.0",
     "@prisma/client": "^7.0.1",
     "mysql2": "^3.15.3",
     "next": "16.0.4",
