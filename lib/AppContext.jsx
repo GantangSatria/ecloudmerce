@@ -66,7 +66,7 @@ export function AppProvider({ children }) {
     form.append("name", data.name);
     form.append("price", data.price);
     form.append("desc", data.desc || "");
-    form.append("oldImageUrl", data.imageUrl || "");
+    form.append("oldImageUrl", data.oldImageUrl || "");
 
     if (data.file) {
       form.append("file", data.file);

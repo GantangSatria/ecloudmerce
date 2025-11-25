@@ -26,7 +26,8 @@ export default function ProductForm({ onSubmit, initial }) {
       name,
       price: Number(price),
       desc,
-      file,      
+      file,
+      oldImageUrl: initial?.imageUrl || null,      
     });
 
     setName("");
