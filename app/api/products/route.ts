@@ -15,6 +15,7 @@ export async function POST(req: Request) {
       name: body.name,
       price: body.price,
       imageUrl: body.imageUrl || null,
+      desc: body.desc ?? null,
     },
   });
   return NextResponse.json(product);

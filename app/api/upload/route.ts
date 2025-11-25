@@ -31,6 +31,7 @@ export async function POST(req: Request) {
         Key: filename,
         Body: buffer,
         ContentType: file.type,
+        ACL: "public-read"
       })
     );
 

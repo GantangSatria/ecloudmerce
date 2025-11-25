@@ -6,11 +6,11 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../lib/generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Product {
@@ -18,5 +18,6 @@ model Product {
   name      String
   price     Int
   imageUrl  String?
+  desc      String?
   createdAt DateTime @default(now())
 }
