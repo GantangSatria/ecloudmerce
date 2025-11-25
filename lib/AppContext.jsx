@@ -52,6 +52,7 @@ export function AppProvider({ children }) {
       body: JSON.stringify({
         name: data.name,
         price: data.price,
+        desc: data.desc || "",
         imageUrl: imageUrl,
       }),
     });
@@ -61,14 +62,27 @@ export function AppProvider({ children }) {
   };
 
   const updateProduct = async (id, data) => {
+    const form = new FormData();
+    form.append("name", data.name);
+    form.append("price", data.price);
+    form.append("desc", data.desc || "");
+    form.append("oldImageUrl", data.imageUrl || "");
+
+    if (data.file) {
+      form.append("file", data.file);
+    }
+
     const res = await fetch(`/api/products/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: form,
     });
+
     const updated = await res.json();
-    setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)));
+
+    setProducts(prev => prev.map(p => p.id === id ? updated : p));
   };
+
+
 
   const deleteProduct = async (id) => {
     await fetch(`/api/products/${id}`, { method: "DELETE" });
