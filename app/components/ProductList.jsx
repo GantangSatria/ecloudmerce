@@ -2,7 +2,7 @@
 
 export default function ProductList({ products, onEdit, onDelete, onAddToCart }) {
   if (products.length === 0) {
-    return <p className="text-zinc-600">Belum ada produk.</p>;
+    return <p className="text-zinc-600">Belum ada produk.....</p>;
   }
 
   return (

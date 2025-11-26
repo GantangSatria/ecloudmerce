@@ -13,7 +13,7 @@ export default function CartPage() {
       ) : (
         <div className="space-y-4">
           {cartItems.map((i) => (
-            <div key={i.id} className="flex items-center justify-between rounded-xl border bg-white p-4 shadow-sm hover:shadow-md transition">
+            <div key={i.id} className="flex items-center justify-between rounded-xl border bg-[#f1f5f9] p-4 shadow-sm hover:shadow-md transition">
               <div className="flex items-center gap-4">
                 <div className="h-16 w-16 overflow-hidden rounded-lg border bg-zinc-100">
                   {i.image ? (

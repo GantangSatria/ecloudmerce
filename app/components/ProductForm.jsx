@@ -38,7 +38,7 @@ export default function ProductForm({ onSubmit, initial }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 ">
       <div>
         <label className="block text-sm font-medium mb-1">Gambar Produk</label>
         <div className="flex items-center gap-4">
@@ -88,7 +88,7 @@ export default function ProductForm({ onSubmit, initial }) {
 
       <button
         onClick={handleSubmit}
-        className="w-full rounded-lg bg-black text-white px-4 py-2 hover:bg-zinc-800 transition"
+        className="w-full rounded-xl bg-[#27272a] text-white px-4 py-2 hover:bg-zinc-700 transition"
       >
         {initial ? "Update" : "Tambah"}
       </button>

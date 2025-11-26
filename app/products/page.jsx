@@ -34,9 +34,9 @@ export default function ProductsPage() {
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">
-      <h1 className="text-2xl font-bold mb-6">Produk</h1>
+      <h1 className="text-2xl font-bold mb-3">Produk</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <section className="rounded-xl border bg-white p-6 shadow-sm">
+        <section className="rounded-xl border bg-[#f1f5f9] p-6 shadow-sm">
           <h2 className="text-lg font-semibold mb-4">
             {editing ? "Edit Produk" : "Tambah Produk"}
           </h2>
@@ -50,7 +50,7 @@ export default function ProductsPage() {
             </button>
           )}
         </section>
-        <section className="rounded-xl border bg-white p-6 shadow-sm">
+        <section className="rounded-xl border bg-[#f1f5f9] p-6 shadow-sm">
           <h2 className="text-lg font-semibold mb-4">Daftar Produk</h2>
           <ProductList
             products={products}
