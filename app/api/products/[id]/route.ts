@@ -37,7 +37,7 @@ export async function PUT(req: Request, context: { params: PromiseLike<{ id: any
     const oldImageUrl = form.get("oldImageUrl") || null;
     const file = form.get("file");
 
-    let newImageUrl = oldImageUrl;
+    let newImageUrl: string | null = oldImageUrl ? String(oldImageUrl) : null;
 
     // jika user upload file baru
     if (file && typeof file === "object") {
